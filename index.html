@@ -1,0 +1,93 @@
+<!--Página Web de control remoto de una estación para demostración a distancia-->
+<!DOCTYPE html>
+<html lang="es"  data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Meteo Web</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="shortcut icon" href="pictures/icono_meteorologia.png" alt="Icono nueva pestaña"/>
+</head>
+
+<body>
+  <div class="b-example-divider"></div>
+  <!--Primer bloque para control de Led remotamente-->
+    <div class="bg-dark text-secondary px-4  text-center">
+      <div class="py-5">
+        <img width="7%" height="7%" src="pictures/icono_meteorologia.png" alt="Icono Central">
+        <h1 class="display-5 fw-bold text-white">Control Remoto</h1>
+        <div class="col-lg-6 mx-auto">
+          <p class="fs-5 mb-4">Con este boton se envia una señal a la ESP8266 para que prenda o apague su Led Built-in.</p>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+              <button type="button" onclick="on_led()" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Led ON</button>
+              <button type="button" onclick="off_led()" class="btn btn-outline-light btn-lg px-4">Led OFF</button>
+        </div>
+      </div>
+    </div>
+
+  <!--Segundo bloque con dashboard desde ThinkSpeak-->
+  <div class="container">
+    <div class="row justify-content-center" >
+
+      <div class="col-xs-8 col-sm-12 col-md-9 col-lg-5">
+        <h2>Temperatura</h2>
+        <iframe width=100%  height=260px style="border: 1px solid #cccccc; object-fit:cover;" src="https://thingspeak.com/channels/2610696/charts/1?bgcolor=%23000000&color=%23edf2f4&dynamic=true&results=60&timescale=10&title=Temperatura&type=line&xaxis=Fecha&yaxis=Grados+%5B%C2%BAC%5D&yaxismax=27&yaxismin=18"></iframe>
+      </div>
+      <div class="col-xs-8 col-sm-12 col-md-9 col-lg-4">
+        <h2>Presión Atmosférica</h2>
+        <iframe width=100% height=260px style="border: 1px solid #cccccc; " src="https://thingspeak.com/channels/2610696/widgets/899513"></iframe>
+      </div>
+      <div class="col-xs-8 col-sm-12 col-md-9 col-lg-3">
+        <h2>Humedad</h2>
+        <iframe width=100% height=260px style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/2610696/widgets/899516"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-example-divider"></div>
+
+<!--Tercer bloque con algo de información-->
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-body-secondary">©2024 Julio</p>
+
+    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+    </a>
+
+    <ul class="nav col-md-4 justify-content-end">
+      <li class="nav-item"><a href="https://github.com/nicoled95" class="nav-link px-2 text-body-secondary">About.</a></li>
+    </ul>
+  </footer>
+
+
+  <!--Script para el envio de comando al evento onclick de los botones-->
+  <script>
+    function on_led(){
+      fetch("https://api.thingspeak.com/talkbacks/52766/commands.json?api_key=PN83LFT66O4IMDDI&command_string=ON", {
+    method:"POST"
+    }).then(result => {
+        // do something with the result
+        console.log("Completed with result:", result);
+        alert("Se ha enviado la solicitud de prendido de LED!");
+    }).catch(err => {
+        // if any error occured, then catch it here
+        console.error(err);
+    });
+    }
+    function off_led(){
+      fetch("https://api.thingspeak.com/talkbacks/52766/commands.json?api_key=PN83LFT66O4IMDDI&command_string=OFF", {
+    method:"POST"
+    }).then(result => {
+        console.log("Completed with result:", result);
+        alert("Se ha enviado la solicitud de apagado de LED!");
+    }).catch(err => {
+        console.error(err);
+    });
+    }
+  </script>
+
+</body>
+
+</html>
